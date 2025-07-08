@@ -67,10 +67,7 @@ python main.py
 
 3. **Probar con archivo:**
 ```bash
-# Usando curl
-curl -X POST -F "file=@tu_archivo.wav" http://localhost:5000/predict
-
-# O usando el script de prueba
+# Usando el script de prueba
 python test_clean.py -f tu_archivo.wav
 ```
 
