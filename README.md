@@ -19,19 +19,11 @@ Respuesta:
 {
     "status": "saludable",
     "model_loaded": true,
-    "message": "API de Reconocimiento de Género",
-    "timestamp": 1720396800.123
+    "message": "API de Reconocimiento de Género"
 }
 ```
 
-### 2. Warm-up (Opcional)
-```bash
-GET /warmup
-```
-
-Precarga el modelo para predicciones más rápidas. Úsalo después del deploy.
-
-### 3. Predicción por archivo
+### 2. Predicción por archivo
 ```bash
 POST /predict
 ```
@@ -51,8 +43,7 @@ curl -X POST -F "file=@audio.wav" http://localhost:5000/predict
     "male_probability": 0.85,
     "female_probability": 0.15,
     "confidence": "alto",
-    "confidence_score": 0.85,
-    "processing_time": 2.34
+    "confidence_score": 0.85
 }
 ```
 
@@ -99,32 +90,6 @@ APIRecoGenVoz/
     ├── features.npy
     ├── labels.npy
     └── model.h5
-```
-
-## Optimizaciones para producción
-
-### 🚀 **Mejoras implementadas**
-- **Keep-alive automático** - Evita que la app se duerma en Render
-- **Endpoint /warmup** - Precarga el modelo para predicciones más rápidas  
-- **Tiempo de procesamiento** - Monitorea el rendimiento de cada predicción
-- **Timestamp** - Tracking de disponibilidad en health check
-
-### 🚨 **Troubleshooting**
-
-#### **Error: "No se proporcionó archivo de audio"**
-**En Postman:**
-1. POST → `https://apirecogenvoz.onrender.com/predict`
-2. Body → form-data
-3. Key: `file` ⚠️ **Cambiar de "Text" a "File"**
-4. Value: Seleccionar archivo WAV
-
-#### **Para mejor rendimiento:**
-```bash
-# 1. Warm-up después del deploy
-curl https://apirecogenvoz.onrender.com/warmup
-
-# 2. Luego hacer predicciones
-curl -X POST -F "file=@audio.wav" https://apirecogenvoz.onrender.com/predict
 ```
 
 ¡La API ahora funciona perfectamente sin pyaudio y solo procesa archivos subidos! 🎉
