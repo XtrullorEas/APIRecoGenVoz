@@ -1,9 +1,7 @@
-tensorflow==2.15.0
-scikit-learn==1.3.2
-numpy==1.24.3
-pandas==2.1.4
-tqdm==4.66.1
-librosa==0.10.1
-flask==3.0.0
-flask-cors==4.0.0
-werkzeug==3.0.1
+tensorflow
+scikit-learn
+numpy
+pandas
+tqdm
+pyaudio
+librosa

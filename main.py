@@ -4,9 +4,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 # Corregir la importación - usar el nombre correcto de tu archivo
-from test import extract_feature
-# Comentamos record_to_file ya que requiere micrófono del servidor
-# from test import record_to_file
+from test import record_to_file, extract_feature
 from utils import create_model
 
 app = Flask(__name__)
@@ -95,16 +93,7 @@ def predict():
 
 @app.route('/record', methods=['POST'])
 def record():
-    """Endpoint no disponible en servidor sin micrófono"""
-    return jsonify({
-        'error': 'Este endpoint no está disponible en el servidor. Usa /predict para subir archivos de audio.'
-    }), 501
-
-# Comentado: Endpoint original que requiere micrófono del servidor
-"""
-@app.route('/record', methods=['POST'])
-def record():
-    '''Endpoint específico para grabar desde el micrófono del servidor'''
+    """Endpoint específico para grabar desde el micrófono del servidor"""
     if model is None:
         return jsonify({'error': 'Modelo no cargado'}), 500
         
@@ -143,7 +132,6 @@ def record():
         # Limpiar archivo temporal
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
-"""
 
 @app.errorhandler(413)
 def too_large(e):
