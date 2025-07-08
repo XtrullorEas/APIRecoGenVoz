@@ -3,8 +3,8 @@ from flask_cors import CORS
 import os
 import uuid
 from werkzeug.utils import secure_filename
-# Corregir la importación - usar el nombre correcto de tu archivo
-from test import record_to_file, extract_feature
+# Solo importar extract_feature del archivo limpio sin pyaudio
+from test_clean import extract_feature
 from utils import create_model
 
 app = Flask(__name__)
@@ -45,7 +45,7 @@ def predict():
         
     # Verificar si se envió un archivo
     if 'file' not in request.files:
-        return jsonify({'error': 'No se proporcionó archivo. Usa el endpoint /record para grabación con micrófono'}), 400
+        return jsonify({'error': 'No se proporcionó archivo de audio'}), 400
     
     file = request.files['file']
     if file.filename == '':
@@ -86,48 +86,6 @@ def predict():
         
     except Exception as e:
         return jsonify({'error': f'Error procesando audio: {str(e)}'}), 500
-    finally:
-        # Limpiar archivo temporal
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
-
-@app.route('/record', methods=['POST'])
-def record():
-    """Endpoint específico para grabar desde el micrófono del servidor"""
-    if model is None:
-        return jsonify({'error': 'Modelo no cargado'}), 500
-        
-    try:
-        temp_filename = os.path.join(app.config['UPLOAD_FOLDER'], f"{uuid.uuid4()}.wav")
-        
-        # Nota: record_to_file requiere acceso al micrófono del servidor
-        # Esto solo funcionará si el servidor tiene micrófono
-        record_to_file(temp_filename)
-        
-        features = extract_feature(temp_filename, mel=True).reshape(1, -1)
-        male_prob = float(model.predict(features)[0][0])
-        female_prob = 1 - male_prob
-        gender = "male" if male_prob > female_prob else "female"
-        
-        # Determinar confianza
-        confidence_score = max(male_prob, female_prob)
-        if confidence_score > 0.8:
-            confidence = "alto"
-        elif confidence_score > 0.6:
-            confidence = "medio"
-        else:
-            confidence = "bajo"
-        
-        return jsonify({
-            'gender': gender,
-            'male_probability': male_prob,
-            'female_probability': female_prob,
-            'confidence': confidence,
-            'confidence_score': confidence_score
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Error grabando audio: {str(e)}'}), 500
     finally:
         # Limpiar archivo temporal
         if os.path.exists(temp_filename):
